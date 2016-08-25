@@ -4,11 +4,6 @@ module.exports = parseTorrent
 module.exports.remote = parseTorrentRemote
 
 var blobToBuffer = require('blob-to-buffer')
-try {
-  var fs = require('fs') // browser exclude
-} catch (err) {
-  // broser exclude
-}
 var get = require('simple-get')
 var magnet = require('magnet-uri')
 var parseTorrentFile = require('parse-torrent-file')
@@ -74,12 +69,6 @@ function parseTorrentRemote (torrentId, cb) {
       headers: { 'user-agent': 'WebTorrent (http://webtorrent.io)' }
     }, function (err, res, torrentBuf) {
       if (err) return cb(new Error('Error downloading torrent: ' + err.message))
-      parseOrThrow(torrentBuf)
-    })
-  } else if (typeof fs !== 'undefined' && typeof fs.readFile === 'function' && typeof torrentId === 'string') {
-    // assume it's a filesystem path
-    fs.readFile(torrentId, function (err, torrentBuf) {
-      if (err) return cb(new Error('Invalid torrent identifier'))
       parseOrThrow(torrentBuf)
     })
   } else {
